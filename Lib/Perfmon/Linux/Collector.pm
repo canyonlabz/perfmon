@@ -19,7 +19,7 @@ use lib qw "./;../";
 use Modules::Config;
 use Modules::Logger;
 use Linux::Statistics;
-use strict;
+#use strict;
 use Data::Dumper;
 
 
