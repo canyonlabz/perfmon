@@ -1,12 +1,12 @@
 #!/usr/bin/perl -w
 #
-# Copyright:     AppLabs Inc, 2010
+# Copyright:     CanyonLabz, 2018
 # Author:        Jason Smallcanyon
 # Revision:      $Revision$
-# Last Revision: $Date$
-# Modified By:   $LastChangedBy$
-# Last Modified: $LastChangedDate$
-# Source:        $URL$
+# Last Revision: 2009
+# Modified By:   Jason Smallcanyon
+# Last Modified: $Date: July 16, 2013 $
+# Source:        $Source:  $
 #
 ####################################################################################
 ##
@@ -31,7 +31,7 @@ use strict;
 #    "FILE_STATS"      => getFileStatCounters(),             #
 #    "DISK_USAGE"      => getDiskUsageCounters(),            #
 #    "PROCESS_STATS"   => getProcessCounters(),              #
-#    "LOAD_AVG"        => getLoadAvgCounters()               # 
+#    "LOAD_AVG"        => getLoadAvgCounters()               #
 #                                                            #
 ##############################################################
 
@@ -41,8 +41,8 @@ use strict;
 
 #
 # getCpuCounters() - Return array reference listing all CPU counters.
-# Input:  
-# Output: 
+# Input:
+# Output:
 sub getCpuCounters {
     my $counters = [
         "Elapsed Time",
@@ -64,9 +64,9 @@ sub getCpuCounters {
 
 #
 # getMemoryCounters() - Return array reference listing all memory counters.
-# Input:  
-# Output: 
-sub getMemoryCounters { 
+# Input:
+# Output:
+sub getMemoryCounters {
     my $counters = [
         "Elapsed Time",
         "Memory Used",
@@ -85,7 +85,7 @@ sub getMemoryCounters {
 
 #
 # getDiskCounters() - Return array reference listing all physical disk counters.
-# Input: 
+# Input:
 # Output:
 sub getDiskCounters {
     my $counters = [
@@ -105,8 +105,8 @@ sub getDiskCounters {
 
 #
 # getNetworkCounters() - Return array reference listing all network counters.
-# Input: 
-# Output: 
+# Input:
+# Output:
 sub getNetworkCounters {
     my $counters = [
         "Elapsed Time",
@@ -136,7 +136,7 @@ sub getNetworkCounters {
 #
 # getPageSwapCounters() - Return array reference listing all page/swap counters.
 # Input:
-# Output: 
+# Output:
 sub getPageSwapCounters {
     my $counters = [
         "Elapsed Time",
@@ -150,7 +150,7 @@ sub getPageSwapCounters {
 
 #
 # getSocketCounters() - Return array reference listing all socket counters.
-# Input: 
+# Input:
 # Output:
 sub getSocketCounters {
     my $counters = [
@@ -166,8 +166,8 @@ sub getSocketCounters {
 
 #
 # getFileStatCounters() - Return array reference listing all file statistic counters.
-# Input: 
-# Output: 
+# Input:
+# Output:
 sub getFileStatCounters {
     my $counters = [
         "Elapsed Time",
@@ -187,8 +187,8 @@ sub getFileStatCounters {
 
 #
 # getDiskUsageCounters() - Return array reference listing all disk usage counters.
-# Input: 
-# Output: 
+# Input:
+# Output:
 sub getDiskUsageCounters {
     my $counters = [
         "Elapsed Time",
@@ -203,8 +203,8 @@ sub getDiskUsageCounters {
 
 #
 # getProcessCounters() - Return array reference listing all process counters.
-# Input: 
-# Output: 
+# Input:
+# Output:
 sub getProcessCounters {
     my $counters = [
         "Elapsed Time",
@@ -248,8 +248,8 @@ sub getProcessCounters {
 
 #
 # getLoadAvgCounters() - Return array reference listing all load average counters.
-# Input: 
-# Output: 
+# Input:
+# Output:
 sub getLoadAvgCounters {
     my $counters = [
         "Elapsed Time",

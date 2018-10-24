@@ -1,10 +1,10 @@
 #!/usr/bin/perl -w
 #
-# Copyright:     Jason Smallcanyon, 2009
+# Copyright:     CanyonLabz, 2018
 # Author:        Jason Smallcanyon
-# Revision:      $Revision: 1.0.1 $
-# Last Revision: $Date$
-# Modified By:   $Author: Jason Smallcanyon $
+# Revision:      $Revision$
+# Last Revision: 2009
+# Modified By:   Jason Smallcanyon
 # Last Modified: $Date: July 16, 2013 $
 # Source:        $Source:  $
 #
@@ -47,11 +47,11 @@ else {
 # Output: Returns 1 if successful and undef if failed
 sub logEvent {
     my($content) = @_;
-    
+
 	my $CONFIG = new Modules::Config();
     my $log_file = $CONFIG->{'EVENT_LOG'};
     my $timestamp = fetchDate();
-    
+
     # Make sure our content is defined
     if (defined($content) && ($content ne "")) {
         $content = $timestamp.",".$content;
@@ -59,7 +59,7 @@ sub logEvent {
     else {
         return;
     }
-    
+
     # Append
     if (-e $log_file) {
         open(OUTFILE, ">>$log_file") || die "Cannot append to $log_file: $!\n";
@@ -72,7 +72,7 @@ sub logEvent {
         print OUTFILE "$content\n";
         close(OUTFILE);
     }
-    
+
     return 1;
 }
 

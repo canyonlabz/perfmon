@@ -1,12 +1,12 @@
 #!/usr/bin/perl -w
 #
-# Copyright:     Jason Smallcanyon, 2011
+# Copyright:     CanyonLabz, 2018
 # Author:        Jason Smallcanyon
 # Revision:      $Revision$
-# Last Revision: $Date$
-# Modified By:   $LastChangedBy$
-# Last Modified: $LastChangedDate$
-# Source:        $URL$
+# Last Revision: 2009
+# Modified By:   Jason Smallcanyon
+# Last Modified: $Date: July 16, 2013 $
+# Source:        $Source:  $
 #
 ####################################################################################
 ##
@@ -31,11 +31,11 @@ use Data::Dumper;
 # Output: Object for performance metric collection
 sub new {
 	my $class = shift;
-    
+
     my $self = {
         "OUTPUT" => "CSV"
     };
-    
+
     bless $self, $class;   # Tag object with pkg name
     return $self;
 }
@@ -47,15 +47,15 @@ sub new {
 sub writeMetricsToFile {
     my ($self) = shift;
     my ($content, $results_file, $headings) = @_;
-    
+
     $results_file .= ".csv";   # Output to a CSV file
-    
+
     # Make sure we have the content
     unless (defined($content)) {
         logEvent("[Error]: The content could not be found for the file [$results_file]. Skipping....");
         return -1;
     }
-        
+
     # Append
     if (-e $results_file) {
         open(OUTFILE, ">>$results_file") || die "Cannot append to $results_file: $!\n";
@@ -69,7 +69,7 @@ sub writeMetricsToFile {
         print OUTFILE "$metric_headings\n";
         print OUTFILE "$content\n";
         close(OUTFILE);
-    }    
+    }
     return 1;
 }
 
@@ -80,7 +80,7 @@ sub writeMetricsToFile {
 sub writeMetricsPerInstance {
     my ($self) = shift;
     my ($content, $results_file, $headings) = @_;
-    
+
     foreach my $key (keys (%{$content})) {
         my $tmp_file = $results_file . "_" . $key;
         my $retval = $self->writeMetricsToFile($content->{$key}, $tmp_file, $headings);
@@ -96,7 +96,7 @@ sub writeMetricsPerInstance {
 sub writeMetricsPerProcess {
     my ($self) = shift;
     my ($content, $results_file, $headings, $cell) = @_;
-    
+
     foreach my $key (keys (%{$content})) {
         my @proc_array = split /,/, $content->{$key};
         my $proc_name = $proc_array[$cell];
@@ -117,26 +117,26 @@ sub writeMetricsPerProcess {
 sub formatMetricHeadings {
     my($self) = shift;
     my($headings) = shift;
-    
+
     # Make sure we are receiving a valid array reference
     unless (ref($headings) eq 'ARRAY') {
         my $logTime = time();
         logEvent("[Warning]: The data type received in formatMetricHeadings() was not a valid array reference.");
         return;
     }
-    
+
     my @keys = @$headings;
-    
+
     # Define the following
     my $stdout = "";
-    
+
     # Iterate through each performance counter and format the values
     for (my $i=0; $i <= ($#keys); $i++) {
         $stdout .= $keys[$i] . ",";
     }
-    
+
     $stdout =~ s/(,)$//;
-    
+
     return ($stdout);
 }
 
@@ -148,16 +148,16 @@ sub formatMetricHeadings {
 sub formatMetrics {
     my($self) = shift;
     my($metrics) = shift;
-    
+
     # Make sure we have values to format
     unless (defined($metrics)) {
         logEvent("[Warning]: There were no performance metrics returned for formatting. Skipping....");
         return;
     }
-    
+
     # Define the following
     my $stdout;
-    
+
     # If our data type is a hash, then we have multiple instances of the performance object (i.e. multiple NICs, multiple processors, etc.)
     if (ref($metrics) eq 'HASH') {
         while (my($key,$value) = each %{$metrics}) {
@@ -166,7 +166,7 @@ sub formatMetrics {
                 $tmp_stdout .= ((defined($stat) && $stat ne "") ? $stat : "null") . ",";
             }
             $tmp_stdout =~ s/(,)$//;
-            
+
             # Return our metrics per device
             $stdout->{$key} = $tmp_stdout;
         }
@@ -179,7 +179,7 @@ sub formatMetrics {
         }
         $stdout =~ s/(,)$//;
     }
-    
+
     return ($stdout);
 }
 

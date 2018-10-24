@@ -1,6 +1,10 @@
 #!/usr/bin/perl -w
 #
-# Modified By:   $Author: Jason Smallcanyon $
+# Copyright:     CanyonLabz, 2018
+# Author:        Jason Smallcanyon
+# Revision:      $Revision$
+# Last Revision: 2009
+# Modified By:   Jason Smallcanyon
 # Last Modified: $Date: July 16, 2013 $
 # Source:        $Source:  $
 #

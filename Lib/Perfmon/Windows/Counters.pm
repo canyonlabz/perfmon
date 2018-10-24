@@ -1,12 +1,12 @@
 #!/usr/bin/perl -w
 #
-# Copyright:     Jason Smallcanyon, 2010
+# Copyright:     CanyonLabz, 2018
 # Author:        Jason Smallcanyon
 # Revision:      $Revision$
-# Last Revision: $Date$
-# Modified By:   $ Jason Smallcanyon $
-# Last Modified: $ 06/18/2015 $
-# Source:        $URL$
+# Last Revision: 2009
+# Modified By:   Jason Smallcanyon
+# Last Modified: $Date: July 16, 2013 $
+# Source:        $Source:  $
 #
 ####################################################################################
 ##
@@ -32,7 +32,7 @@ use strict;
 #    "FILE_STATS"      => getFileStatCounters(),             #
 #    "DISK_USAGE"      => getDiskUsageCounters(),            #
 #    "PROCESS_STATS"   => getProcessCounters(),              #
-#    "LOAD_AVG"        => getLoadAvgCounters()               # 
+#    "LOAD_AVG"        => getLoadAvgCounters()               #
 #                                                            #
 ##############################################################
 
@@ -54,8 +54,8 @@ our @EXPORT = qw(getCpuCounters getMemoryCounters getDiskCounters getNetworkCoun
 
 #
 # getCpuCounters() - Returns a set of Windows CPU performance metrics.
-# Input:  
-# Output: 
+# Input:
+# Output:
 sub getCpuCounters {
     my $counters = [
         "Elapsed Time",
@@ -72,9 +72,9 @@ sub getCpuCounters {
 
 #
 # getMemoryCounters() - Returns a set of Windows memory performance metrics.
-# Input:  
-# Output: 
-sub getMemoryCounters { 
+# Input:
+# Output:
+sub getMemoryCounters {
     my $counters = [
         "Elapsed Time",
 		"Memory\\Available Bytes",
@@ -83,13 +83,13 @@ sub getMemoryCounters {
 		"Memory\\\% Committed Bytes in Use",
 		"Memory\\Commit Limit"
     ];
- 
+
     return ($counters);
 }
 
 #
 # getDiskCounters() - Returns a set of Windows physical disk performance metrics.
-# Input: 
+# Input:
 # Output:
 sub getDiskCounters {
     my $counters = [
@@ -110,8 +110,8 @@ sub getDiskCounters {
 
 #
 # getNetworkCounters() - Returns a set of Windows network (NIC) performance metrics.
-# Input: 
-# Output: 
+# Input:
+# Output:
 # NOTE: Need to identify how to capture the correct NIC (i.e. Ethernet, wireless, etc.)
 sub getNetworkCounters {
     my $counters = [
@@ -133,7 +133,7 @@ sub getNetworkCounters {
 #
 # getPageSwapCounters() - Returns a set of Windows paging performance metrics.
 # Input:
-# Output: 
+# Output:
 sub getPageSwapCounters {
     my $counters = [
         "Elapsed Time",
@@ -144,7 +144,7 @@ sub getPageSwapCounters {
 		"Memory\\Pages Output/sec",
 		"Memory\\Pages/sec",
 		"Memory\\Pool Paged Bytes",
-		"Memory\\Pool Nonpaged Bytes"	
+		"Memory\\Pool Nonpaged Bytes"
     ];
 
     return ($counters);
@@ -152,7 +152,7 @@ sub getPageSwapCounters {
 
 #
 # getSocketCounters() - Returns a set of TCPv4/UDPv4 (connections/datagrams) Windows performance metrics.
-# Input: 
+# Input:
 # Output:
 sub getSocketCounters {
     my $counters = [
@@ -168,14 +168,14 @@ sub getSocketCounters {
 		"UDPv4\\Datagrams Sent/sec",
 		"UDPv4\\Datagrams/sec",
     ];
-	
+
     return ($counters);
 }
 
 #
 # getFileStatCounters() - Returns a set of file performance statistics.
-# Input: 
-# Output: 
+# Input:
+# Output:
 sub getFileStatCounters {
     my $counters = [
         "Elapsed Time",
@@ -193,8 +193,8 @@ sub getFileStatCounters {
 
 #
 # getDiskUsageCounters() - Returns a set of Windows disk usage performance metrics.
-# Input: 
-# Output: 
+# Input:
+# Output:
 sub getDiskUsageCounters {
     my $counters = [
         "Elapsed Time",
@@ -208,8 +208,8 @@ sub getDiskUsageCounters {
 
 #
 # getLoadAvgCounters() - Returns a set of Windows CPU load statistics.
-# Input: 
-# Output: 
+# Input:
+# Output:
 # NOTE:  Uses Win32_Processor
 sub getLoadAvgCounters {
     my $counters = [
@@ -227,9 +227,9 @@ sub getLoadAvgCounters {
 }
 
 #
-# getProcessCounters() - 
-# Input: 
-# Output: 
+# getProcessCounters() -
+# Input:
+# Output:
 sub getProcessCounters {
     my $counters = [
         "Elapsed Time",
@@ -266,14 +266,14 @@ sub getProcessCounters {
         "CMDLINE",
         "Pid"
     ];
-	
+
     return ($counters);
 }
 
 #
-# getProcessUtilCounters() - 
-# Input: 
-# Output: 
+# getProcessUtilCounters() -
+# Input:
+# Output:
 sub getProcessUtilCounters {
     my $counters = [
         "Elapsed Time",

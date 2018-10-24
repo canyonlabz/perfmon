@@ -1,12 +1,12 @@
 #!/usr/bin/perl -w
 #
-# Copyright:     Jason Smallcanyon, 2011
+# Copyright:     CanyonLabz, 2018
 # Author:        Jason Smallcanyon
 # Revision:      $Revision$
-# Last Revision: $Date$
-# Modified By:   $ Jason Smallcanyon $
-# Last Modified: $ 06/09/2015 $
-# Source:        $URL$
+# Last Revision: 2009
+# Modified By:   Jason Smallcanyon
+# Last Modified: $Date: July 16, 2013 $
+# Source:        $Source:  $
 #
 ####################################################################################
 ##
@@ -54,7 +54,7 @@ my $COLLECTOR = Collector::new();
 
 my $IO = new Perfmon::IO();
 
-my $METRICS = { 
+my $METRICS = {
     "CPU_STATS"       => getCpuCounters(),
     "MEMORY_STATS"    => getMemoryCounters(),
     "DISK_STATS"      => getDiskCounters(),
@@ -77,9 +77,9 @@ my $METRICS = {
 # Output: Object for performance monitoring
 sub new {
     my $class = shift;
-	
+
 	my $CONFIG = new Modules::Config();
-	
+
     my $self = {
         "METRICS"      => $METRICS,
         "SESSION_ID"   => time(),         # This is the directory of where the results are stored
@@ -91,7 +91,7 @@ sub new {
         "DISKIO"       => "",              # Init value of the disk stats (used to calculate disk I/O Kbytes/sec)
 		"RESULTS_PATH" => $CONFIG->{'RESULTS_PATH'}
     };
-    
+
     bless $self, $class;   # Tag object with pkg name
     return $self;
 }
@@ -105,17 +105,17 @@ sub new {
 sub recordMetrics {
     my($self) = shift;
     my($perfobj, $content, $headings) = @_;
-    
+
     # Define the following
     my $resultsPath = $self->{'RESULTS_PATH'};
     my $resultsDir  = $resultsPath . $self->{'SESSION_ID'} . ( ($^O =~ /MSWin32/) ? "\\" : "/" );
     my $resultsFile = $resultsDir . $perfobj;
-    
+
     my $rv;
     unless (-d $resultsDir) {
         $rv = $self->createResultsDir($self->{'SESSION_ID'});
     }
-    
+
     # If our data type is a hash reference then we are dealing with performance objects with multiple instances (i.e. multiple NICs, multiple processors, etc.)
     my $retval = 0;
     if (ref($content) eq 'HASH') {
@@ -133,7 +133,7 @@ sub recordMetrics {
     else {
         $retval = $IO->writeMetricsToFile($content, $resultsFile, $headings);
     }
-    
+
     return 1;
 }
 
@@ -144,43 +144,43 @@ sub recordMetrics {
 sub createResultsDir {
     my($self) = shift;
     my($session_id) = @_;
-    
+
     # Make sure we have a valid session ID value
     unless (defined($session_id) && $session_id ne "") {
         print "ERROR: Did not receive a session ID value for createResultsDir().\n";
         exit;
     }
-    
+
     my $resultsPath = $self->{'RESULTS_PATH'};
     my $resultsDir = $resultsPath . $session_id . ( ($^O =~ /MSWin32/) ? "\\" : "/" );
-    
+
     # Check if our directory already exists
     if (-d $resultsDir) {
         return;
     }
-    
+
     # Make sure we remember where we are
     use Cwd;
     my $oldPath = cwd;
     if ($^O =~ /MSWin32/) {
         $oldPath =~ s/\//\\/g;
     }
-    
+
     # Change into the directory where our results exist
     chdir($resultsPath) || die "Cannot chdir to: $resultsPath ($!) \n";
-    
+
     # Define our current path
     my $currentPath = cwd;
     if ($^O =~ /MSWin32/) {
         $currentPath =~ s/\//\\/g;
     }
-    
+
     # Create our directory
     mkdir($session_id,0777) || die "Cannot mkdir [$session_id]: $! \n";
-    
+
     # Change back to old path when we finish, so relative paths continue to make sense
     chdir($oldPath);
-    
+
     return 1;
 }
 
@@ -189,7 +189,7 @@ sub createResultsDir {
 # ------------------------------------------------------------------------------
 
 #
-# getCpuMetrics() - 
+# getCpuMetrics() -
 # Input:
 # Output:
 sub getCpuMetrics {
@@ -200,7 +200,7 @@ sub getCpuMetrics {
 }
 
 #
-# getMemoryMetrics() - 
+# getMemoryMetrics() -
 # Input:
 # Output:
 sub getMemoryMetrics {

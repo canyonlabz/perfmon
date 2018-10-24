@@ -1,12 +1,12 @@
 #!/usr/bin/perl -w
 #
-# Copyright:     AppLabs Inc, 2011
+# Copyright:     CanyonLabz, 2018
 # Author:        Jason Smallcanyon
 # Revision:      $Revision$
-# Last Revision: $Date$
-# Modified By:   $LastChangedBy$
-# Last Modified: $LastChangedDate$
-# Source:        $URL$
+# Last Revision: 2009
+# Modified By:   Jason Smallcanyon
+# Last Modified: $Date: July 16, 2013 $
+# Source:        $Source:  $
 #
 ####################################################################################
 ##
@@ -36,7 +36,7 @@ use Data::Dumper;
 #    "FILE_STATS"      => getFileStatsMetrics(),             #
 #    "DISK_USAGE"      => getDiskUsageMetrics(),             #
 #    "PROCESS_STATS"   => getProcessMetrics(),               #
-#    "LOAD_AVG"        => getLoadAvgMetrics()                # 
+#    "LOAD_AVG"        => getLoadAvgMetrics()                #
 #                                                            #
 ##############################################################
 
@@ -55,7 +55,7 @@ my $DEBUG = 0;
 # Input:  None
 # Output: Object for performance metric collection
 sub new {
-    
+
     my $self = {
         "CPUTIME"  => "",             # Init value of the CPU stats (used to calculate %CPU utilization)
         "MEMINFO"  => "",             # Init value of the memory stats (used to calculate process (PID) %memory used)
@@ -63,14 +63,14 @@ sub new {
         "DISKIO"   => "",              # Init value of the disk stats (used to calculate disk I/O Kbytes/sec)
         "INTERVAL" => ""
     };
-    
+
     bless $self, 'Collector';   # Tag object with pkg name
     return $self;
 }
 
 #
 # getCpuMetrics() - Capture the CPU metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the CPU metrics captured
 sub getCpuMetrics {
     my ($self) = shift;
@@ -102,22 +102,22 @@ sub getCpuMetrics {
         );
         $statinfo{$key} = \@stats_array;
     }
-        
+
     # Update the CPU time values
     $self->{'CPUTIME'} = $stats;
-    
+
     return (\%statinfo);
 }
 
 #
 # getMemoryMetrics() - Capture the memory metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the memory metrics captured
 sub getMemoryMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my @statinfo;
-    
+
     my $obj = Linux::Statistics->new( MemStats => 1 );
     my $stats = Linux::Statistics->MemStats();
     @statinfo = (
@@ -132,29 +132,29 @@ sub getMemoryMetrics {
         $stats->{'SwapUsedPer'},
         $stats->{'SwapTotal'}
     );
-    
+
     unshift(@statinfo,$elapsed_time);
-    
+
     return (\@statinfo);
 }
 
 #
 # getDiskMetrics() - Capture the disk metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the disk metrics captured
 sub getDiskMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my @statinfo;
-    
+
     my $obj = Linux::Statistics->new( DiskStats => 1 );
     my $stats = Linux::Statistics->DiskStats();
-    
+
     my $delta = ($stats->{'ReadBytes'} + $stats->{'WriteBytes'}) - ($self->{'DISKIO'}->{'ReadBytes'} + $self->{'DISKIO'}->{'WriteBytes'});
     print "DEBUG>> " . Dumper($self->{'DISKIO'}) . "\n";
     print "DEBUG>> " . ($stats->{'ReadBytes'} + $stats->{'WriteBytes'}) . " --- " . ($self->{'DISKIO'}->{'ReadBytes'} + $self->{'DISKIO'}->{'WriteBytes'}) . " === " . $delta . "\n\n";
     my $diskio = ($delta/1000) / $self->{'INTERVAL'};   ## Kbytes/sec.
-    
+
     @statinfo = (
         $stats->{'Major'},
         $stats->{'Minor'},
@@ -166,28 +166,28 @@ sub getDiskMetrics {
         ($stats->{'ReadBytes'} + $stats->{'WriteBytes'}),
         $diskio
     );
-    
+
     unshift(@statinfo,$elapsed_time);
-    
+
     return (\@statinfo);
 }
 
 #
 # getNetworkMetrics() - Capture the network metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Hash reference to the network metrics captured per device
 sub getNetworkMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my %statinfo;
-    
+
     my @exclude = qw(lo sit0);   # Network devices to exclude from returning
-    
+
     my $obj = Linux::Statistics->new( NetStats => 1 );
     my ($net,$sum) = Linux::Statistics->NetStats();
-    
+
     my $netutil = 0;   ## TODO:  return %network utilization
-    
+
     DEV: while(my($key,$value) = each %{$net}) {
         foreach my $dev (@exclude) {
             next DEV if ($key eq $dev);
@@ -216,19 +216,19 @@ sub getNetworkMetrics {
         );
         $statinfo{$key} = \@stats_array;
     }
-    
+
     return (\%statinfo);
 }
 
 #
 # getPageSwapMetrics() - Capture the page swap metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the page swap metrics captured
 sub getPageSwapMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my @statinfo;
-    
+
     my $obj = Linux::Statistics->new( PgSwStats => 1 );
     my $stats = Linux::Statistics->PgSwStats();
     @statinfo = (
@@ -237,21 +237,21 @@ sub getPageSwapMetrics {
         $stats->{'SwapIn'},
         $stats->{'SwapOut'}
     );
-    
+
     unshift(@statinfo,$elapsed_time);
-    
+
     return (\@statinfo);
 }
 
 #
 # getSocketMetrics() - Capture the socket metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the socket metrics captured
 sub getSocketMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my @statinfo;
-    
+
     my $obj = Linux::Statistics->new( SockStats => 1 );
     my $stats = Linux::Statistics->SockStats();
     @statinfo = (
@@ -261,21 +261,21 @@ sub getSocketMetrics {
         $stats->{'Raw'},
         $stats->{'IpFrag'}
     );
-    
+
     unshift(@statinfo,$elapsed_time);
-    
+
     return (\@statinfo);
 }
 
 #
 # getFileStatsMetrics() - Capture the file stats metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the file stats metrics captured
 sub getFileStatsMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my @statinfo;
-    
+
     my $obj = Linux::Statistics->new( FileStats => 1 );
     my $stats = Linux::Statistics->FileStats();
     @statinfo = (
@@ -290,24 +290,24 @@ sub getFileStatsMetrics {
         $stats->{'AgeLimit'},
         $stats->{'WantPages'}
     );
-    
+
     unshift(@statinfo,$elapsed_time);
-    
+
     return (\@statinfo);
 }
 
 #
 # getDiskUsageMetrics() - Capture the disk usage metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the disk usage metrics captured
 sub getDiskUsageMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my %statinfo;
-    
+
     my $obj = Linux::Statistics->new( DiskUsage => 1 );
     my $stats = Linux::Statistics->DiskUsage();
-        
+
     while (my($key,$value) = each %{$stats}) {
         my @stats_array = (
             $elapsed_time,
@@ -319,22 +319,22 @@ sub getDiskUsageMetrics {
         );
         $statinfo{$key} = \@stats_array;
     }
-    
+
     return (\%statinfo);
 }
 
 #
 # getProcessMetrics() - Capture the given process metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Hash reference to the process metrics captured
 sub getProcessMetrics {
     my ($self) = shift;
     my ($item_list, $elapsed_time, $fetch_by_owner) = @_;
     my %statinfo;
-    
+
     print "DEBUG>> [getProcessMetrics] => Input => Item List \n" if $DEBUG > 1;
     print "DEBUG>> [getProcessMetrics] => " . Dumper($item_list) . "\n" if $DEBUG > 1;
-    
+
     my $processes;
     if (defined($fetch_by_owner) && $fetch_by_owner =~ m/true/i) {
         $processes = $self->getProcessesByOwner($item_list);
@@ -350,11 +350,11 @@ sub getProcessMetrics {
         $output =~ s/^\s+//;
         $output =~ s/\s+$//;
         my @procstats = split /\s+/, $output;
-        
+
         # Make sure we have real values
         my $percentMemory = (defined($procstats[1]) && $procstats[1] ne "") ? $procstats[1] : "null";
         my $processMemUsed = (defined($procstats[1]) && $procstats[1] ne "") ? (($self->{'MEMINFO'}->{'Value'} / 100) * $procstats[1]) : "null";
-        
+
         my @stats_array = (
             $elapsed_time,
             $value->{'PPid'},
@@ -394,19 +394,19 @@ sub getProcessMetrics {
         );
         $statinfo{$key} = \@stats_array;
     }
-    
+
     return (\%statinfo);
 }
 
 #
 # getLoadAvgMetrics() - Capture the load average metrics and output the results to an array
-# Input:  
+# Input:
 # Output: Array reference to the load average metrics captured
 sub getLoadAvgMetrics {
     my ($self) = shift;
     my ($elapsed_time) = shift;
     my @statinfo;
-    
+
     my $obj = Linux::Statistics->new( LoadAVG => 1 );
     my $stats = Linux::Statistics->LoadAVG();
     @statinfo = (
@@ -416,9 +416,9 @@ sub getLoadAvgMetrics {
         $stats->{'RunQueue'},
         $stats->{'Count'}
     );
-    
+
     unshift(@statinfo,$elapsed_time);
-    
+
     return (\@statinfo);
 }
 
@@ -430,7 +430,7 @@ sub getSystemInfo {
     # Return info based upon OS
     my $obj = Linux::Statistics->new( SysInfo => 1 );
     my $stats = Linux::Statistics->SysInfo();
-    
+
     return ($stats);
 }
 
@@ -446,11 +446,11 @@ sub getSystemInfo {
 sub getProcessesByOwner {
     my ($self) = shift;
     my ($process_owner) = shift;
-    
+
     unless (defined($process_owner)) {
         return;
     }
-    
+
     my @procList;
     if (ref($process_owner) eq 'ARRAY') {
         # We have an array representing multiple owners
@@ -464,9 +464,9 @@ sub getProcessesByOwner {
         $procList[0] = $process_owner;
         print "DEBUG>> [getProcessByOwner] => Process owner is a STRING \n" if $DEBUG > 1;
     }
-    
+
     print "DEBUG>> [getProcessByOwner] => " . Dumper($process_owner) . "\n" if $DEBUG > 1;
-    
+
     my %processes;
     foreach my $owner (@procList) {
         my $procOwner = $owner;
@@ -478,7 +478,7 @@ sub getProcessesByOwner {
         }
         $processes{$procOwner} = \@output;
     }
-    
+
     return (\%processes);
 }
 
@@ -490,11 +490,11 @@ sub getProcessesByOwner {
 sub getProcessesByName {
     my ($self) = shift;
     my ($process_list) = shift;
-    
+
     unless (defined($process_list)) {
         return;
     }
-    
+
     my @procList;
     if (ref($process_list) eq 'ARRAY') {
         # We have an array representing multiple processes
@@ -508,9 +508,9 @@ sub getProcessesByName {
         $procList[0] = $process_list;
         print "DEBUG>> [getProcessByName] => Process list is a STRING \n" if $DEBUG > 1;
     }
-    
+
     print "DEBUG>> [getProcessByName] => " . Dumper($process_list) . "\n" if $DEBUG > 1;
-    
+
     ## NOTE: While trying to list each process, you just need to list the actual executable name, rather than the whole list of parameters/options.
     ## EXAMPLE:  The following process showing in the "ps" list would show as:  /bin/sh - /usr/lib/vxvm/bin/vxrelocd root
     ##           However, you only need to list the following in the config.ini file:  vxrelocd
@@ -525,20 +525,20 @@ sub getProcessesByName {
         }
         $processes{$procName} = \@output;
     }
-    
+
     return (\%processes);
 }
 
 #
 # ProcessesByID() - Returns a list of process stats based upon a given process list (PIDs)
 # Input:  $procList - Array reference containing a list of all the processes (by name) we want to capture stats for.
-# Output: 
+# Output:
 sub ProcessesByID {
     my ($self) = shift;
     my ($procList) = shift;
-    
+
     my (%sps,%userids);
-    
+
     # We parse our process list
     my @prc;
     my %procRef = %$procList;
@@ -547,27 +547,27 @@ sub ProcessesByID {
             push (@prc, $prx);
         }
     }
-    
+
     # Define the following files
     my $passwd_file = "/etc/passwd";
     my $uptime_file = "/proc/uptime";
     my $procdir     = "/proc";
-    
+
     # we trying to get the UIDs for each linux user
     open my $fhp, '<', $passwd_file or die "Statistics: can't open $passwd_file";
-    
+
     while (defined (my $line = <$fhp>)) {
         next if $line =~ /^(#|$)/;
         my ($user,$uid) = (split /:/,$line)[0,2];
         $userids{$uid} = $user;
     }
-    
+
     close $fhp;
-    
+
     open my $fhu, '<', $uptime_file or die "Statistics: can't open $uptime_file";
     my $uptime = (split /\s+/, <$fhu>)[0];
     close $fhu;
-    
+
     foreach my $pid (@prc) {
         #  memory usage for each process
         if (open my $fhm, '<', "$procdir/$pid/statm") {
@@ -577,7 +577,7 @@ sub ProcessesByID {
             delete $sps{$pid};
             next;
         }
-        
+
         #  different other informations for each process
         if (open my $fhp, '<', "$procdir/$pid/stat") {
             @{$sps{$pid}}{qw(
@@ -590,19 +590,19 @@ sub ProcessesByID {
             delete $sps{$pid};
             next;
         }
-        
+
         # calculate the active time of each process
         my $s = sprintf('%li',$uptime - $sps{$pid}{StartTime} / 100);
         my $m = 0;
         my $h = 0;
         my $d = 0;
-        
+
         $s >= 86400 and $d = sprintf('%i',$s / 86400) and $s = $s % 86400;
         $s >= 3600  and $h = sprintf('%i',$s / 3600)  and $s = $s % 3600;
         $s >= 60    and $m = sprintf('%i',$s / 60);
-        
+
         $sps{$pid}{ActiveTime} = sprintf '%02d:%02d:%02d', $d, $h, $m;
-        
+
         # determine the owner of the process
         if (open my $fhu, '<', "$procdir/$pid/status") {
             while (defined (my $line = <$fhu>)) {
@@ -610,14 +610,14 @@ sub ProcessesByID {
                 next unless $line =~ /^Uid:\s+(\d+)/;
                 $sps{$pid}{Owner} = $userids{$1} if $userids{$1};
             }
-            
+
             $sps{$pid}{Owner} = 'n/a' unless $sps{$pid}{Owner};
             close $fhu;
         } else {
             delete $sps{$pid};
             next;
         }
-        
+
         #  command line for each process
         if (open my $fhc, '<', "$procdir/$pid/cmdline") {
             $sps{$pid}{CMDLINE} =  <$fhc>;
@@ -627,7 +627,7 @@ sub ProcessesByID {
             close $fhc;
         }
     }
-    
+
     return \%sps;
 }
 
@@ -638,13 +638,13 @@ sub ProcessesByID {
 #
 # load_cpu() - Function that captures the CPU time values from the /proc/stat file and returns them
 #              as a hash reference. If multiple processors, it returns all processor CPU time values.
-# Input:  
+# Input:
 # Output: Hash reference containing all processor CPU time values.
 sub load_cpu {
     my ($self) = shift;
-    
+
     my $metric_file = "/proc/stat";
-    
+
     # Make sure our file exists
     unless (open INFILE, $metric_file) {
         logEvent("[Error]: The metrics file ($metric_file) could not be found.");
@@ -652,9 +652,9 @@ sub load_cpu {
     }
     my @contents = <INFILE>;
     close (INFILE);
-    
+
     my %cputimes;
-    
+
     foreach my $line (@contents) {
         if ($line =~ m/^cpu/i) {
             $line =~ s/^\s+//;
@@ -672,45 +672,45 @@ sub load_cpu {
             };
         }
     }
-    
+
     return (\%cputimes);
 }
 
 #
 # cpu_time_diff() - Calculates the delta between a past CPU snapshot and a current CPU snapshot.
-# Input: 
+# Input:
 # Output: Hash reference containing the delta values.
-sub cpu_time_diff { 
+sub cpu_time_diff {
     my($first, $second) = @_;
-    
+
     my %diff;  # Hash that contains the CPU time differences
     $diff{'User'}    = $second->{'User'} - $first->{'User'};
     $diff{'Nice'}    = $second->{'Nice'} - $first->{'Nice'};
     $diff{'System'}  = $second->{'System'} - $first->{'System'};
     $diff{'Idle'}    = $second->{'Idle'} - $first->{'Idle'};
-    
+
     return \%diff;
 }
 
 #
 # cpu_time_perc() - Calculates the percent utilization for each CPU time value.
-# Input: 
+# Input:
 # Output: Hash reference containing the percent values.
 sub cpu_time_perc {
     my ($diff) = shift;
-    
+
     use Math::Round::Var;
     my $rnd = Math::Round::Var->new(0.01);  # rounds to two decimal places:
-    
+
     my $total = 0;
     $total = $diff->{'User'} + $diff->{'Nice'} + $diff->{'System'} + $diff->{'Idle'};
-    
+
     my %result;
     $result{'User'}   = $rnd->round( (($diff->{'User'} / $total) * 100) );
     $result{'Nice'}   = $rnd->round( (($diff->{'Nice'} / $total) * 100) );
     $result{'System'} = $rnd->round( (($diff->{'System'} / $total) * 100) );
     $result{'Idle'}   = $rnd->round( (($diff->{'Idle'} / $total) * 100) );
-    
+
     return \%result;
 }
 
@@ -719,14 +719,14 @@ sub cpu_time_perc {
 # -----------------------------------------------------------
 
 #
-# load_memory() - Function that captures the memory values from the /proc/meminfo file and returns them as a hash reference. 
-# Input:  
+# load_memory() - Function that captures the memory values from the /proc/meminfo file and returns them as a hash reference.
+# Input:
 # Output: Hash reference containing memory stats.
 sub load_memory {
     my ($self) = shift;
-    
+
     my $metric_file = "/proc/meminfo";
-    
+
     # Make sure our file exists
     unless (open INFILE, $metric_file) {
         logEvent("[Error]: The metrics file ($metric_file) could not be found.");
@@ -734,9 +734,9 @@ sub load_memory {
     }
     my @contents = <INFILE>;
     close (INFILE);
-    
+
     my %retval;
-    
+
     foreach my $line (@contents) {
         $line =~ s/^\s+//;
         $line =~ s/\s+$//;
@@ -758,7 +758,7 @@ sub load_memory {
             $retval{$tmp_array[0]} = {"Value" => ($tmp_array[1] * 1000), "Unit"  => "Bytes"};
         }
     }
-    
+
     return (\%retval);
 }
 
@@ -769,15 +769,15 @@ sub load_memory {
 sub load_diskio {
     my ($self) = shift;
     my %retval;
-    
+
     my $obj = Linux::Statistics->new( DiskStats => 1 );
     my $stats = Linux::Statistics->DiskStats();
-    
+
     $retval{'ReadRequests'}  = $stats->{'ReadRequests'};
     $retval{'ReadBytes'}     = $stats->{'ReadBytes'};
     $retval{'WriteRequests'} = $stats->{'WriteRequests'};
     $retval{'WriteBytes'}    = $stats->{'WriteBytes'};
-        
+
     return (\%retval);
 }
 
