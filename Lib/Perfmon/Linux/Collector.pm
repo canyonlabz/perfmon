@@ -15,7 +15,7 @@
 package Collector;
 
 
-use lib qw "../../";
+use lib qw "./;../";
 use Modules::Config;
 use Modules::Logger;
 use Linux::Statistics;

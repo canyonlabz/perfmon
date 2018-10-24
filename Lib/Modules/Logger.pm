@@ -29,13 +29,13 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(logEvent fetchDate);     # Symbols to export by default
 
 my $username;
-if ($^O =~ /MSWin32/) {
-    require Win32;
-	$username = Win32::LoginName;
-}
-else {
-	$username = "";
-}
+#if ($^O =~ /MSWin32/) {
+#    require Win32;
+#	$username = Win32::LoginName;
+#}
+#else {
+#	$username = "";
+#}
 
 # -----------------------------------------------------------
 # FUNCTIONS:
