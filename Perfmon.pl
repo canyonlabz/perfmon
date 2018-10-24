@@ -13,8 +13,8 @@
 ##
 
 BEGIN {
-    push @INC, "../Library/Perl-Lib";
-    push @INC, "../Library/Perl-Lib/Modules";
+    push @INC, "Lib";
+    push @INC, "Lib/Modules";
 }
 
 use Modules::Config;
